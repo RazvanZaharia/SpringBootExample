@@ -1,12 +1,10 @@
 package hello;
 
-import hello.model.Customer;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import hello.repository.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class HelloController {
@@ -14,31 +12,32 @@ public class HelloController {
     @Autowired
     private CustomerRepository repository;
 
-    @RequestMapping("/")
+    @GetMapping("/")
     public String index() {
         return "Hello from SpringBoot Example!!";
     }
 
     @GetMapping("/users")
+    @ResponseBody
     public String getUsers() {
-        String response = "";
-        // fetch all customers
-        response = response.concat("Customers found with findAll():");
-        response = response.concat("-------------------------------");
-        response = response.concat("\n");
-        for (Customer customer : repository.findAll()) {
-            response = response.concat(customer.toString());
-            response = response.concat("\n");
-        }
-        response = response.concat("");
+        String usersJson = "";
+        ObjectMapper mapper = new ObjectMapper();
 
-        return response;
+        try {
+            usersJson = mapper.writeValueAsString(repository.findAll());
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+            usersJson = "Error";
+        }
+
+        return usersJson;
     }
 
     private String response;
 
-    @RequestMapping("/users/{username}")
-    private String getUserByLastName(@PathVariable String username) {
+    @GetMapping(value = {"/users/"})
+    @ResponseBody
+    private String getUserByLastName(@RequestParam("username") String username) {
         response = "";
         repository.findByLastName(username).forEach(user -> {
             response = response.concat(user.toString());
