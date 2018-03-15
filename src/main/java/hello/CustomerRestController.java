@@ -1,7 +1,9 @@
 package hello;
 
 import hello.model.Customer;
+import hello.model.SuccessResponse;
 import hello.model.customerDTOs.CustomerDTO;
+import hello.model.customerDTOs.DeleteCustomerDTO;
 import hello.model.customerDTOs.NewCustomerDTO;
 import hello.model.customerDTOs.UpdateCustomerDTO;
 import hello.repository.CustomerRepository;
@@ -15,6 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static hello.repository.RepositoryConstants.PARAM_USER_ID;
+import static hello.repository.RepositoryConstants.USER_ENDPOINT;
+
 @RestController
 public class CustomerRestController {
 
@@ -26,8 +31,6 @@ public class CustomerRestController {
         return "Hello from SpringBoot Example!!";
     }
 
-    @GetMapping("/users")
-    public @ResponseBody
     List<CustomerDTO> getUsers() {
         List<CustomerDTO> listOfUsers = new ArrayList<>();
         ModelMapper modelMapper = new ModelMapper();
@@ -40,36 +43,32 @@ public class CustomerRestController {
         return listOfUsers;
     }
 
-    @GetMapping(value = {"/users/"})
+    @GetMapping(value = USER_ENDPOINT)
     private @ResponseBody
-    List<CustomerDTO> getUser(@RequestParam(value = "username", required = false) String username, @RequestParam(value = "userId", required = false) Long userId) {
-        ModelMapper modelMapper = new ModelMapper();
-        List<CustomerDTO> listOfUsers = new ArrayList<>();
-
+    List<CustomerDTO> getUser(@RequestParam(value = PARAM_USER_ID, required = false) Long userId) {
         if (userId != null) {
+            ModelMapper modelMapper = new ModelMapper();
+            List<CustomerDTO> listOfUsers = new ArrayList<>();
+
             Optional<Customer> customerOptional = repository.findById(userId);
             if (customerOptional.isPresent()) {
                 CustomerDTO customerDTO = modelMapper.map(customerOptional.get(), CustomerDTO.class);
                 listOfUsers.add(customerDTO);
             }
-        } else if (username != null && !username.isEmpty()) {
-            for (Customer item : repository.findByLastName(username)) {
-                CustomerDTO customerDTO = modelMapper.map(item, CustomerDTO.class);
-                listOfUsers.add(customerDTO);
-            }
+            return listOfUsers;
+        } else {
+            return getUsers();
         }
-
-        return listOfUsers;
     }
 
-    @PostMapping("/users/")
+    @PostMapping(value = USER_ENDPOINT)
     private @ResponseBody
     CustomerDTO newUser(@DTO(NewCustomerDTO.class) Customer customer) {
         ModelMapper modelMapper = new ModelMapper();
         return modelMapper.map(repository.save(customer), CustomerDTO.class);
     }
 
-    @PutMapping("/users/")
+    @PutMapping(value = USER_ENDPOINT)
     @ResponseStatus(HttpStatus.OK)
     private @ResponseBody
     CustomerDTO updateUser(@DTO(UpdateCustomerDTO.class) Customer customer) {
@@ -77,4 +76,11 @@ public class CustomerRestController {
         return modelMapper.map(repository.save(customer), CustomerDTO.class);
     }
 
+    @DeleteMapping(value = USER_ENDPOINT)
+    @ResponseStatus(HttpStatus.OK)
+    private @ResponseBody
+    SuccessResponse deleteUser(@DTO(DeleteCustomerDTO.class) Customer customer) {
+        repository.delete(customer);
+        return new SuccessResponse(true);
+    }
 }
