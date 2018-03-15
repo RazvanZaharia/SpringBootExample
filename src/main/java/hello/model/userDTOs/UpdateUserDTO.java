@@ -1,20 +1,16 @@
-package hello.model.customerDTOs;
+package hello.model.userDTOs;
 
 import java.io.Serializable;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
 
-public class NewCustomerDTO implements Serializable {
+public class UpdateUserDTO implements Serializable{
+
+    private Long id;
 
     private String firstName;
 
     private String lastName;
 
     private String userName;
-
-    private String password;
 
     public String getFirstName() {
         return firstName;
@@ -40,12 +36,11 @@ public class NewCustomerDTO implements Serializable {
         this.userName = userName;
     }
 
-    public String getPassword() {
-        return password;
+    public Long getId() {
+        return id;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setId(Long id) {
+        this.id = id;
     }
-
 }

@@ -6,7 +6,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class Customer {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -16,10 +16,10 @@ public class Customer {
     private String userName;
     private String password;
 
-    public Customer() {
+    public User() {
     }
 
-    public Customer(String firstName, String lastName, String userName, String password) {
+    public User(String firstName, String lastName, String userName, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
@@ -69,7 +69,7 @@ public class Customer {
     @Override
     public String toString() {
         return String.format(
-                "Customer[id=%d, firstName='%s', lastName='%s']",
+                "User[id=%d, firstName='%s', lastName='%s']",
                 id, firstName, lastName);
     }
 

@@ -1,8 +1,8 @@
-package hello.model.customerDTOs;
+package hello.model.userDTOs;
 
 import java.io.Serializable;
 
-public class DeleteCustomerDTO implements Serializable {
+public class DeleteUserDTO implements Serializable {
 
     private Long id;
 

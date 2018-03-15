@@ -1,4 +1,4 @@
-package hello.model;
+package hello.responses;
 
 import java.io.Serializable;
 

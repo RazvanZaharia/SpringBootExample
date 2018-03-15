@@ -1,32 +1,32 @@
 package hello;
 
-import hello.model.Customer;
-import hello.model.customerDTOs.NewCustomerDTO;
-import hello.model.customerDTOs.UpdateCustomerDTO;
+import hello.model.User;
+import hello.model.userDTOs.NewUserDTO;
+import hello.model.userDTOs.UpdateUserDTO;
 import org.junit.Test;
 import org.modelmapper.ModelMapper;
 
 import static org.junit.Assert.assertEquals;
 
 
-public class CustomerUT {
+public class UserUT {
     private static final ModelMapper modelMapper = new ModelMapper();
 
     @Test
     public void checkExamMapping() {
-        NewCustomerDTO creation = new NewCustomerDTO();
+        NewUserDTO creation = new NewUserDTO();
         creation.setFirstName("FirstName");
         creation.setLastName("LastName");
         creation.setUserName("first_last");
         creation.setPassword("first123");
 
-        Customer exam = modelMapper.map(creation, Customer.class);
+        User exam = modelMapper.map(creation, User.class);
         assertEquals(creation.getFirstName(), exam.getFirstName());
         assertEquals(creation.getLastName(), exam.getLastName());
         assertEquals(creation.getUserName(), exam.getUserName());
         assertEquals(creation.getPassword(), exam.getPassword());
 
-        UpdateCustomerDTO update = new UpdateCustomerDTO();
+        UpdateUserDTO update = new UpdateUserDTO();
         update.setFirstName("FirstNameUpdate");
         update.setLastName("LastNameUpdate");
         update.setUserName("first_last_update");

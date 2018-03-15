@@ -1,16 +1,20 @@
-package hello.model.customerDTOs;
+package hello.model.userDTOs;
 
 import java.io.Serializable;
 
-public class UpdateCustomerDTO implements Serializable{
+public class UserDTO implements Serializable {
 
     private Long id;
-
     private String firstName;
-
     private String lastName;
 
-    private String userName;
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getFirstName() {
         return firstName;
@@ -26,21 +30,5 @@ public class UpdateCustomerDTO implements Serializable{
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 }
