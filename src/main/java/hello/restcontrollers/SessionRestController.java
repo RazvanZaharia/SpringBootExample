@@ -11,6 +11,7 @@ import hello.responses.TokenResponse;
 import hello.utils.DTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,7 +38,7 @@ public class SessionRestController {
             return new TokenResponse(new ModelMapper().map(registeredUser, UserDTO.class), token);
         }
 
-        return new TokenResponse(null, "");
+        throw new BadCredentialsException("Error registering");
     }
 
     @PostMapping(value = LOGIN_USER_ENDPOINT)
@@ -56,7 +57,7 @@ public class SessionRestController {
             }
         }
 
-        return new TokenResponse(null, "");
+        throw new BadCredentialsException("No user found for username - " + loginUser.getUserName());
     }
 
     @PostMapping(value = LOGOUT_USER_ENDPOINT)

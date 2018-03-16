@@ -30,9 +30,9 @@ public class TokenAuthenticationProvider implements AuthenticationProvider {
         final User user = ManageToken.checkTokenAndReturnUser(token, userRepository);
         if (user == null) {
             throw new BadCredentialsException("No user found for token - " + token);
+        } else {
+            return new AuthenticationToken(token, user);
         }
-
-        return new AuthenticationToken(token, user);
     }
 
     @Override

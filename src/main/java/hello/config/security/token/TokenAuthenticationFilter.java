@@ -17,8 +17,7 @@ import java.util.Collections;
 
 public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    public static final String TOKEN_HEADER = "X-Authentication";
-
+    private static final String TOKEN_HEADER = "X-Authentication";
 
     public TokenAuthenticationFilter(RequestMatcher requestMatcher) {
         super(requestMatcher);
@@ -47,13 +46,6 @@ public class TokenAuthenticationFilter extends AbstractAuthenticationProcessingF
             throws AuthenticationException, IOException, ServletException {
 
         final String tokenValue = getTokenValue(request);
-
-        if (StringUtils.isEmpty(tokenValue)) {
-            //Doing this check is kinda dumb because we check for it up above in doFilter
-            //..but this is a public method and we can't do much if we don't have the header
-            //also we can't do the check only here because we don't have the chain available
-            return null;
-        }
 
         AuthenticationToken token = new AuthenticationToken(tokenValue);
         token.setDetails(authenticationDetailsSource.buildDetails(request));
