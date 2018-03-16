@@ -1,9 +1,11 @@
 package hello.restcontrollers;
 
 import hello.model.User;
+import hello.model.userDTOs.LoginUserDTO;
 import hello.model.userDTOs.NewUserDTO;
 import hello.model.userDTOs.UserDTO;
 import hello.repository.UserRepository;
+import hello.responses.SuccessResponse;
 import hello.utils.DTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,15 +32,15 @@ public class SessionRestController {
 
     @PostMapping(value = LOGIN_USER_ENDPOINT)
     private @ResponseBody
-    UserDTO loginUser(@DTO(NewUserDTO.class) User user) {
+    SuccessResponse loginUser(@DTO(LoginUserDTO.class) User user) {
         ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(repository.save(user), UserDTO.class);
+        return new SuccessResponse(true);
     }
 
     @PostMapping(value = LOGOUT_USER_ENDPOINT)
     private @ResponseBody
-    UserDTO logoutUser(@DTO(NewUserDTO.class) User user) {
+    SuccessResponse logoutUser(@DTO(NewUserDTO.class) User user) {
         ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(repository.save(user), UserDTO.class);
+        return new SuccessResponse(true);
     }
 }
