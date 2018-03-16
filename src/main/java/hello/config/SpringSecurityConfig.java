@@ -1,20 +1,21 @@
 package hello.config;
 
-import hello.config.userdetails.CustomUserDetailsService;
-import hello.repository.UserRepository;
+import hello.config.security.token.TokenAuthenticationFilter;
+import hello.config.security.token.TokenAuthenticationProvider;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-
-import javax.sql.DataSource;
+import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AndRequestMatcher;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -24,23 +25,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     private AuthenticationEntryPoint authEntryPoint;
 
     @Autowired
-    private CustomUserDetailsService userDetailsService;
-
-    @Qualifier("dataSource")
-    @Autowired
-    DataSource dataSource;
-
-    @Bean
-    public DaoAuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder());
-        return authProvider;
-    }
+    private TokenAuthenticationProvider tokenAuthenticationProvider;
 
     @Autowired
-    public void configAuthentication(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(authenticationProvider());
+    public void config(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(tokenAuthenticationProvider);
     }
 
     @Override
@@ -48,9 +37,22 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic().authenticationEntryPoint(authEntryPoint)
                 .and().authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/session/*").permitAll()
-                .anyRequest().authenticated();
+                .anyRequest().authenticated()
+                .and().addFilterBefore(createCustomFilter(), AnonymousAuthenticationFilter.class);
+
 
         http.csrf().disable();
+    }
+
+    private AbstractAuthenticationProcessingFilter createCustomFilter() throws Exception {
+        //here we define the interfaces which don't need any authorisation
+        TokenAuthenticationFilter filter = new TokenAuthenticationFilter(new NegatedRequestMatcher(
+                new AndRequestMatcher(
+                        new AntPathRequestMatcher("/session/*")
+                )
+        ));
+        filter.setAuthenticationManager(authenticationManagerBean());
+        return filter;
     }
 
     @SuppressWarnings("deprecation")
