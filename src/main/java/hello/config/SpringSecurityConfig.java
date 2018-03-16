@@ -2,10 +2,16 @@ package hello.config;
 
 import hello.config.security.token.TokenAuthenticationFilter;
 import hello.config.security.token.TokenAuthenticationProvider;
+import hello.config.userdetails.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -17,6 +23,8 @@ import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 
+import java.util.Arrays;
+
 @Configuration
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -27,9 +35,26 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private TokenAuthenticationProvider tokenAuthenticationProvider;
 
+
     @Autowired
-    public void config(AuthenticationManagerBuilder auth) throws Exception {
-        auth.authenticationProvider(tokenAuthenticationProvider);
+    private CustomUserDetailsService userDetailsService;
+
+    @Bean
+    public AuthenticationProvider internalAuthenticationProvider() {
+        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
+        authProvider.setUserDetailsService(userDetailsService);
+        authProvider.setPasswordEncoder(passwordEncoder());
+        return authProvider;
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationTokenProvider() {
+        return tokenAuthenticationProvider;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager() {
+        return new ProviderManager(Arrays.asList(internalAuthenticationProvider(), authenticationTokenProvider()));
     }
 
     @Override
@@ -51,7 +76,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                         new AntPathRequestMatcher("/session/*")
                 )
         ));
-        filter.setAuthenticationManager(authenticationManagerBean());
+        filter.setAuthenticationManager(authenticationManager());
         return filter;
     }
 
