@@ -59,13 +59,6 @@ public class UserRestController {
         return null;
     }
 
-    @PostMapping(value = USERS_ENDPOINT)
-    private @ResponseBody
-    UserDTO newUser(@DTO(NewUserDTO.class) User user) {
-        ModelMapper modelMapper = new ModelMapper();
-        return modelMapper.map(repository.save(user), UserDTO.class);
-    }
-
     @PutMapping(value = USERS_ENDPOINT)
     @ResponseStatus(HttpStatus.OK)
     private @ResponseBody

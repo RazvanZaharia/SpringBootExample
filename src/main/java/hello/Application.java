@@ -10,9 +10,11 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.util.Arrays;
 
+@EnableJpaRepositories("hello.repository")
 @ComponentScan(basePackages = "hello")
 @SpringBootApplication
 public class Application extends SpringBootServletInitializer {
@@ -21,7 +23,7 @@ public class Application extends SpringBootServletInitializer {
         SpringApplication.run(Application.class, args);
     }
 
-    @Bean
+   /* @Bean
     public CommandLineRunner demo(UserRepository repository) {
         return (args) -> {
             // save a couple of customers
@@ -31,5 +33,5 @@ public class Application extends SpringBootServletInitializer {
             repository.save(new User("David", "Palmer", "david_palmer", "david123"));
             repository.save(new User("Michelle", "Dessler", "michelle_dessler", "michelle123"));
         };
-    }
+    }*/
 }
