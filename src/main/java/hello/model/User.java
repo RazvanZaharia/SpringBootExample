@@ -1,6 +1,7 @@
 package hello.model;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class User {
@@ -10,20 +11,21 @@ public class User {
     @Column(name="id")
     private Long id;
     @Column(nullable = false, unique = true)
-    private String userName;
+    private String username;
     @Column(nullable = false)
     private String password;
-
+    @Column
     private String firstName;
+    @Column
     private String lastName;
 
     public User() {
     }
 
-    public User(String firstName, String lastName, String userName, String password) {
+    public User(String firstName, String lastName, String username, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.userName = userName;
+        this.username = username;
         this.password = password;
     }
 
@@ -51,12 +53,12 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPassword() {
@@ -68,10 +70,14 @@ public class User {
     }
 
     @Override
-    public String toString() {
-        return String.format(
-                "User[id=%d, firstName='%s', lastName='%s']",
-                id, firstName, lastName);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return Objects.equals(id, user.id) &&
+                Objects.equals(username, user.username) &&
+                Objects.equals(password, user.password) &&
+                Objects.equals(firstName, user.firstName) &&
+                Objects.equals(lastName, user.lastName);
     }
-
 }

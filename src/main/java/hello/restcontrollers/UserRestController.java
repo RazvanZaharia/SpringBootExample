@@ -59,7 +59,7 @@ public class UserRestController {
         return null;
     }
 
-    @PutMapping(value = USERS_ENDPOINT)
+    @PostMapping(value = USERS_ENDPOINT)
     @ResponseStatus(HttpStatus.OK)
     private @ResponseBody
     UserDTO updateUser(@DTO(UpdateUserDTO.class) User user) {

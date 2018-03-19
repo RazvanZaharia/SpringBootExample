@@ -1,12 +1,11 @@
 package hello.config;
 
-import hello.config.security.token.TokenAuthenticationFilter;
-import hello.config.security.token.TokenAuthenticationProvider;
+import hello.config.security.token.jwt.JWTAuthorizationFilter;
 import hello.config.userdetails.CustomUserDetailsService;
+import hello.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -16,12 +15,11 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
-import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
-import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
-import org.springframework.security.web.util.matcher.AndRequestMatcher;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
@@ -33,13 +31,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     private AuthenticationEntryPoint authEntryPoint;
 
     @Autowired
-    private TokenAuthenticationProvider tokenAuthenticationProvider;
-
-
-    @Autowired
     private CustomUserDetailsService userDetailsService;
 
-    @Bean
+    @Autowired
+    private UserRepository userRepository;
+
+   @Bean
     public AuthenticationProvider internalAuthenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
         authProvider.setUserDetailsService(userDetailsService);
@@ -48,42 +45,42 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public AuthenticationProvider authenticationTokenProvider() {
-        return tokenAuthenticationProvider;
+    public AuthenticationManager authenticationManager() {
+        return new ProviderManager(Arrays.asList(internalAuthenticationProvider()));
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager() {
-        return new ProviderManager(Arrays.asList(internalAuthenticationProvider(), authenticationTokenProvider()));
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.httpBasic().authenticationEntryPoint(authEntryPoint)
+
+        http.cors().and().csrf().disable()
+                .httpBasic().authenticationEntryPoint(authEntryPoint)
                 .and().authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/session/*").permitAll()
+                .antMatchers(HttpMethod.POST, "/session/register", "/session/login").permitAll()
                 .anyRequest().authenticated()
-                .and().addFilterBefore(createCustomFilter(), AnonymousAuthenticationFilter.class);
+                .and()
+                .addFilter(new JWTAuthorizationFilter(authenticationManager(), userRepository))
+//                .addFilter(new JWTAuthenticationFilter(authenticationManager()))
 
-
-        http.csrf().disable();
-    }
-
-    private AbstractAuthenticationProcessingFilter createCustomFilter() throws Exception {
-        //here we define the interfaces which don't need any authorisation
-        TokenAuthenticationFilter filter = new TokenAuthenticationFilter(new NegatedRequestMatcher(
-                new AndRequestMatcher(
-                        new AntPathRequestMatcher("/session/*")
-                )
-        ));
-        filter.setAuthenticationManager(authenticationManager());
-        return filter;
+                // this disables session creation on Spring Security
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @SuppressWarnings("deprecation")
     @Bean
     public static NoOpPasswordEncoder passwordEncoder() {
         return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", new CorsConfiguration().applyPermitDefaultValues());
+        return source;
     }
 
 }

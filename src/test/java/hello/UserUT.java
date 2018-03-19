@@ -17,24 +17,24 @@ public class UserUT {
         NewUserDTO creation = new NewUserDTO();
         creation.setFirstName("FirstName");
         creation.setLastName("LastName");
-        creation.setUserName("first_last");
+        creation.setUsername("first_last");
         creation.setPassword("first123");
 
         User exam = modelMapper.map(creation, User.class);
         assertEquals(creation.getFirstName(), exam.getFirstName());
         assertEquals(creation.getLastName(), exam.getLastName());
-        assertEquals(creation.getUserName(), exam.getUserName());
+        assertEquals(creation.getUsername(), exam.getUsername());
         assertEquals(creation.getPassword(), exam.getPassword());
 
         UpdateUserDTO update = new UpdateUserDTO();
         update.setFirstName("FirstNameUpdate");
         update.setLastName("LastNameUpdate");
-        update.setUserName("first_last_update");
+        update.setUsername("first_last_update");
 
         modelMapper.map(update, exam);
         assertEquals(update.getFirstName(), exam.getFirstName());
         assertEquals(update.getLastName(), exam.getLastName());
         assertEquals(creation.getPassword(), exam.getPassword());
-        assertEquals(update.getUserName(), exam.getUserName());
+        assertEquals(update.getUsername(), exam.getUsername());
     }
 }
