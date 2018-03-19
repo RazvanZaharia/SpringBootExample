@@ -2,7 +2,12 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/SpringBootExample.iml" filepath="$PROJECT_DIR$/SpringBootExample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../fieldmargin-apis/auth-api-boot/auth-api-boot.iml" filepath="$PROJECT_DIR$/../fieldmargin-apis/auth-api-boot/auth-api-boot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../fieldmargin-apis/edge-service-boot/edge-service-boot.iml" filepath="$PROJECT_DIR$/../fieldmargin-apis/edge-service-boot/edge-service-boot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../fieldmargin-apis/fm-core/fm-core.iml" filepath="$PROJECT_DIR$/../fieldmargin-apis/fm-core/fm-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../fieldmargin-apis/fm-core/fm-core-boot/fm-core-boot.iml" filepath="$PROJECT_DIR$/../fieldmargin-apis/fm-core/fm-core-boot/fm-core-boot.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../fieldmargin-apis/fm-core/fm-core-dto/fm-core-dto.iml" filepath="$PROJECT_DIR$/../fieldmargin-apis/fm-core/fm-core-dto/fm-core-dto.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../fieldmargin-apis/notes-api-boot/notes-api-boot.iml" filepath="$PROJECT_DIR$/../fieldmargin-apis/notes-api-boot/notes-api-boot.iml" />
     </modules>
   </component>
 </project>

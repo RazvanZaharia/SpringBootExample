@@ -3,7 +3,10 @@
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
-        <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/../fieldmargin-apis/auth-api-boot/pom.xml" />
+        <option value="$PROJECT_DIR$/../fieldmargin-apis/edge-service-boot/pom.xml" />
+        <option value="$PROJECT_DIR$/../fieldmargin-apis/fm-core/pom.xml" />
+        <option value="$PROJECT_DIR$/../fieldmargin-apis/notes-api-boot/pom.xml" />
       </list>
     </option>
   </component>

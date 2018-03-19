@@ -6,10 +6,20 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="SpringBootExample" />
+        <module name="auth-api-boot" />
+        <module name="edge-service-boot" />
+        <module name="fm-core-boot" />
+        <module name="fm-core-dto" />
+        <module name="notes-api-boot" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="auth-api-boot" target="1.8" />
+      <module name="edge-service-boot" target="1.8" />
+      <module name="fm-core" target="1.8" />
+      <module name="fm-core-boot" target="1.8" />
+      <module name="fm-core-dto" target="1.8" />
+      <module name="notes-api-boot" target="1.8" />
       <module name="SpringBootExample" target="1.8" />
     </bytecodeTargetLevel>
   </component>
